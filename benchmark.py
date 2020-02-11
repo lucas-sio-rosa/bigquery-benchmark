@@ -15,10 +15,10 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('credential_file', help='The path to a json credential file to authenticate the client')
     parser.add_argument('job_prefix', help='The job prefix to be added to the BQ jobs')
     parser.add_argument('query_file', help='The json file with a list of queries to be executed simultaneously')
     parser.add_argument('--query_param_list', help='The json file with a list of parameters to be supplied to the query in round-robin fashion')
+    parser.add_argument('--credential_file', help='The path to a json credential file to authenticate the client')
     parser.add_argument('--pool_size', default=50, type=int, help='Sets the logging level (default INFO)')
     parser.add_argument('--log_level', default=20, type=int, choices=(0, 10, 20, 30, 40, 50), help='Log level')
 
@@ -26,7 +26,7 @@ if __name__ == "__main__":
 
     logging.basicConfig(level=args.log_level)
     executor = ThreadPoolExecutor(args.pool_size)
-    client = bq.Client.from_service_account_json('/home/lucas/Downloads/teste-r.json')
+    client = bq.Client.from_service_account_json(args.credential_file) if args.credential_file else bq.Client()
 
     job_config = bq.job.QueryJobConfig(use_legacy_sql=False, use_query_cache=False)
 
